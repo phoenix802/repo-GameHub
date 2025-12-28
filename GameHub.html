@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameHub - Портал игр</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --dark: #2d3436;
+            --light: #f9f9f9;
+            --accent: #00b894;
+            --danger: #e17055;
+        }
+
+        body {
+            background-color: #1a1a2e;
+            color: var(--light);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--dark));
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: white;
+            text-decoration: none;
+        }
+
+        .logo i {
+            color: var(--accent);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        nav a:hover {
+            background-color: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+
+        .active {
+            background-color: var(--accent);
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: rgba(255,255,255,0.1);
+            border-radius: 25px;
+            padding: 0.5rem 1rem;
+        }
+
+        .search-bar input {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 0.5rem;
+            width: 200px;
+            outline: none;
+        }
+
+        .search-bar button {
+            background: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .hero-content {
+            max-width: 800px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #ddd;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(108, 92, 231, 0.4);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 70px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+        }
+
+        .filter-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .game-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+            border-color: var(--primary);
+        }
+
+        .game-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background-color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .game-image .icon-fallback {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+        }
+
+        .game-image img + .icon-fallback {
+            display: none;
+        }
+
+        .game-content {
+            padding: 1.5rem;
+        }
+
+        .game-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .game-genre {
+            display: inline-block;
+            background: rgba(108, 92, 231, 0.2);
+            color: var(--secondary);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .game-description {
+            color: #bbb;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            height: 60px;
+            overflow: hidden;
+        }
+
+        .game-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .game-rating {
+            color: #ffd700;
+        }
+
+        .play-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .play-btn:hover {
+            background: var(--accent);
+        }
+        .featured-game {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            margin: 4rem 0;
+            background: rgba(255,255,255,0.03);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .featured-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .featured-image {
+            width: 100%;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+        }
+
+        .featured-image .game-image {
+            height: 300px;
+        }
+        
+        footer {
+            background: var(--dark);
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.7rem;
+        }
+
+        .footer-links a {
+            color: #bbb;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .social-icons a:hover {
+            background: var(--primary);
+            transform: translateY(-5px);
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #888;
+        }
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .featured-game {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="#" class="logo">
+                <i class="fas fa-gamepad"></i>
+                GameHub
+            </a>
+            
+            <nav>
+                <ul>
+                    <li><a href="#" class="active">Главная</a></li>
+                    <li><a href="#games">Игры</a></li>
+                    <li><a href="#featured">Популярные</a></li>
+                    <li><a href="#about">О нас</a></li>
+                    <li><a href="#contact">Контакты</a></li>
+                </ul>
+            </nav>
+            
+            <div class="search-bar">
+                <label for="searchInput" class="visually-hidden">Поиск игр</label>
+                <input type="text" id="searchInput" placeholder="Поиск игр...">
+                <button aria-label="Искать"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+    </header>
+    
+    <main>
+        <section class="hero" aria-label="Главный баннер">
+            <div class="hero-content">
+                <h1>Открой мир увлекательных игр</h1>
+                <p>Более 1000 бесплатных и премиальных игр на любой вкус. Присоединяйся к миллионам игроков по всему миру!</p>
+                <button class="cta-button" id="exploreBtn">Играть сейчас</button>
+            </div>
+        </section>
+        
+        <section class="container" id="games" aria-labelledby="games-title">
+            <h2 id="games-title" class="section-title">Каталог игр</h2>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">Все</button>
+                <button class="filter-btn" data-filter="action">Экшен</button>
+                <button class="filter-btn" data-filter="strategy">Стратегии</button>
+                <button class="filter-btn" data-filter="adventure">Приключения</button>
+                <button class="filter-btn" data-filter="puzzle">Головоломки</button>
+                <button class="filter-btn" data-filter="sports">Спорт</button>
+            </div>
+            <div class="games-grid" id="gamesContainer">
+            </div>
+        </section>
+        
+        <section class="container" id="featured" aria-labelledby="featured-title">
+            <div class="featured-game">
+                <div class="featured-content">
+                    <h2 id="featured-title">Игра месяца: Cyber Odyssey</h2>
+                    <p>Погрузитесь в захватывающий киберпанк-мир, полный тайн, технологий и опасностей. Исследуйте огромный открытый мир, развивайте персонажа и принимайте решения, которые изменят судьбу целого города.</p>
+                    <p><strong>Жанр:</strong> РПГ, Экшен, Приключения</p>
+                    <p><strong>Рейтинг:</strong> ★★★★★ (4.8/5)</p>
+                    <button class="cta-button" style="margin-top: 1.5rem;">Играть бесплатно</button>
+                </div>
+                <div class="featured-image">
+                    <div class="game-image">
+                        <img src="40.webp" alt="Cyber Odyssey - Игра месяца">
+                        <div class="icon-fallback">
+                            <i class="fas fa-robot" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="container" id="about" aria-labelledby="about-title">
+            <h2 id="about-title" class="section-title">О нас</h2>
+            <p>GameHub - это ведущая платформа для игроков всех возрастов. Мы предлагаем широкий выбор игр различных жанров, от классических головоломок до современных экшен-игр.</p>
+        </section>
+    </main>
+    
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>GameHub</h3>
+                <p>Лучший портал игр для всех возрастов. Присоединяйтесь к нашему сообществу!</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Навигация</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Главная</a></li>
+                    <li><a href="#games">Игры</a></li>
+                    <li><a href="#featured">Популярные</a></li>
+                    <li><a href="#about">О нас</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Поддержка</h3>
+                <ul class="footer-links">
+                    <li><a href="#">разработчик: +791481443696</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Сообщество</a></li>
+                    <li><a href="#">Связь с нами: Liza.linz0310@mail.ru</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Новости</h3>
+                <div class="search-bar" style="margin-top: 1rem;">
+                    <label for="newsletterEmail" class="visually-hidden">Email для рассылки</label>
+                    <input type="email" id="newsletterEmail" placeholder="Ваш email">
+                    <button aria-label="Подписаться"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>&copy; Сайт создан Алексеевой Елизаветой</p>
+        </div>
+    </footer>
+
+    <script>
+        const games = [
+            {
+                id: 1,
+                title: "Space Adventure",
+                genre: "adventure",
+                description: "Исследуйте далекие галактики, сражайтесь с космическими пиратами и открывайте новые миры.",
+                rating: 4.5,
+                icon: "fas fa-rocket",
+                imageUrl: "12.webp" 
+            },
+            {
+                id: 2,
+                title: "Kingdom Wars",
+                genre: "strategy",
+                description: "Постройте могущественную империю, собирайте армии и завоёвывайте соседние королевства.",
+                rating: 4.8,
+                icon: "fas fa-chess-king",
+                imageUrl: "11.avif" 
+            },
+            {
+                id: 3,
+                title: "Street Racer",
+                genre: "sports",
+                description: "Участвуйте в экстремальных гонках по улицам мегаполиса, улучшайте машины и побеждайте.",
+                rating: 4.3,
+                icon: "fas fa-car",
+                imageUrl: "14.avif" 
+            },
+            {
+                id: 4,
+                title: "Mystery Puzzle",
+                genre: "puzzle",
+                description: "Решайте сложные головоломки, раскрывайте тайны древних цивилизаций и находите сокровища.",
+                rating: 4.7,
+                icon: "fas fa-puzzle-piece",
+                imageUrl: "3.avif" 
+            },
+            {
+                id: 5,
+                title: "Zombie Survival",
+                genre: "action",
+                description: "Выживайте в мире, захваченном зомби, ищите ресурсы и защищайте свой лагерь.",
+                rating: 4.6,
+                icon: "fas fa-skull-crossbones",
+                imageUrl: "99.avif"
+            },
+            {
+                id: 6,
+                title: "Fantasy Quest",
+                genre: "adventure",
+                description: "Отправляйтесь в эпическое путешествие по миру магии, драконов и древних легенд.",
+                rating: 4.9,
+                icon: "fas fa-dragon",
+                imageUrl: "17.avif" 
+            },
+            {
+                id: 7,
+                title: "Football Pro",
+                genre: "sports",
+                description: "Станьте звездой футбола, участвуйте в чемпионатах и приводите свою команду к победе.",
+                rating: 4.4,
+                icon: "fas fa-futbol",
+                imageUrl: "20.avif" 
+            },
+            {
+                id: 8,
+                title: "Cyber Defense",
+                genre: "strategy",
+                description: "Защитите свою сеть от хакерских атак, стройте оборону и контратакуйте.",
+                rating: 4.2,
+                icon: "fas fa-shield-alt",
+                imageUrl: "40.webp" 
+            }
+        ];
+
+        const gamesContainer = document.getElementById('gamesContainer');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const exploreBtn = document.getElementById('exploreBtn');
+
+        function displayGames(filter = 'all') {
+            gamesContainer.innerHTML = '';
+            
+            const filteredGames = filter === 'all' 
+                ? games 
+                : games.filter(game => game.genre === filter);
+            
+            filteredGames.forEach(game => {
+                const gameCard = document.createElement('article');
+                gameCard.className = 'game-card';
+                gameCard.dataset.genre = game.genre;
+                
+                // ШАБЛОН С МЕСТОМ ДЛЯ ФОТО
+                gameCard.innerHTML = `
+                    <div class="game-image" role="img" aria-label="${game.title}">
+                        <!-- МЕСТО ДЛЯ ВАШЕГО ФОТО -->
+                        <!-- Замените src на путь к вашему фото -->
+                        ${game.imageUrl ? `<img src="${game.imageUrl}" alt="${game.title}">` : ''}
+                        <div class="icon-fallback">
+                            <i class="${game.icon}" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                    <div class="game-content">
+                        <h3 class="game-title">${game.title}</h3>
+                        <span class="game-genre">${getGenreName(game.genre)}</span>
+                        <p class="game-description">${game.description}</p>
+                        <div class="game-footer">
+                            <div class="game-rating" aria-label="Рейтинг: ${game.rating} из 5">
+                                ${getRatingStars(game.rating)}
+                            </div>
+                            <button class="play-btn" data-id="${game.id}" aria-label="Играть в ${game.title}">
+                                Играть
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                gamesContainer.appendChild(gameCard);
+            });
+            
+            document.querySelectorAll('.play-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const gameId = this.dataset.id;
+                    playGame(gameId);
+                });
+            });
+        }
+
+        function getGenreName(genre) {
+            const genres = {
+                'action': 'Экшен',
+                'strategy': 'Стратегия',
+                'adventure': 'Приключения',
+                'puzzle': 'Головоломка',
+                'sports': 'Спорт'
+            };
+            return genres[genre] || genre;
+        }
+
+        function getRatingStars(rating) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= Math.floor(rating)) {
+                    stars += '<i class="fas fa-star" aria-hidden="true"></i>';
+                } else if (i === Math.ceil(rating) && rating % 1 !== 0) {
+                    stars += '<i class="fas fa-star-half-alt" aria-hidden="true"></i>';
+                } else {
+                    stars += '<i class="far fa-star" aria-hidden="true"></i>';
+                }
+            }
+            return stars;
+        }
+
+        function playGame(gameId) {
+            const game = games.find(g => g.id == gameId);
+            alert(`Запуск игры: ${game.title}\n\nВ реальном проекте здесь начиналась бы загрузка игры.`);
+        }
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                filterButtons.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const filter = this.dataset.filter;
+                displayGames(filter);
+            });
+        });
+
+        exploreBtn.addEventListener('click', function() {
+            alert('Добро пожаловать в GameHub! Начните играть прямо сейчас!');
+            document.getElementById('games').scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const allGames = document.querySelectorAll('.game-card');          
+            allGames.forEach(card => {
+                const title = card.querySelector('.game-title').textContent.toLowerCase();
+                const genre = card.querySelector('.game-genre').textContent.toLowerCase();  
+                if (title.includes(searchTerm) || genre.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+        
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+                this.classList.add('active');
+                const targetId = this.getAttribute('href');
+                if (targetId !== '#') {
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            });
+        });
+        
+        displayGames();
+    </script>
+</body>
+</html>
